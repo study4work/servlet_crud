@@ -24,7 +24,15 @@ public interface GenericRepository<T, ID> {
     T update(ID id, T t);
 
     default T findById(Class<T> entityClass, ID id) {
-        return HibernateConfig.getSession().get(entityClass, (Serializable) id);
+        T fileFromBd;
+        try (Session session = HibernateConfig.getSession()) {
+            Transaction transaction = session.beginTransaction();
+            fileFromBd = session.get(entityClass, (Serializable) id);
+            transaction.commit();
+        } catch (Exception e) {
+            throw new MyHibernateException("Can't find entity by id" + id);
+        }
+        return fileFromBd;
     }
 
     List<T> findAll();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="servlet" uuid="3d74756d-b028-4216-9264-9652ad1e5b16">
+    <data-source source="LOCAL" name="servlet_crud@localhost" uuid="3a6ada6a-d575-494c-99f2-c620439fa3bf">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:3306/crud</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/servlet_crud</jdbc-url>
     </data-source>
   </component>
 </project>

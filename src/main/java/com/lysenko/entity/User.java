@@ -1,5 +1,7 @@
 package com.lysenko.entity;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,10 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "user")
 public class User {
 
     public User() {
@@ -19,10 +23,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    @Expose
     private Integer id;
-    @Column
+    @Column(name = "name")
+    @Expose
     private String name;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Expose
     private List<Event> events = new ArrayList<>();
 
     public Integer getId() {
@@ -54,7 +62,6 @@ public class User {
         return "User{" +
             "id=" + id +
             ", name='" + name + '\'' +
-            ", events=" + events +
             '}';
     }
 }

@@ -1,34 +1,48 @@
 package com.lysenko.service;
 
+import com.lysenko.entity.Event;
 import com.lysenko.entity.File;
+import com.lysenko.entity.User;
+import com.lysenko.exception.MyHibernateException;
 import com.lysenko.repository.FileRepository;
 import com.lysenko.repository.hibernateImpl.FileRepositoryImpl;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 
 public class FileService {
 
     private final FileRepository fileRepository;
+    private final EventService eventService;
+    private final UserService userService;
+    private final String filePath = "src\\main\\resources\\store\\";
 
     public FileService() {
+        this.userService = new UserService();
+        this.eventService = new EventService();
         this.fileRepository = new FileRepositoryImpl();
     }
 
-    public File save(File file) {
-        String path = "C:\\projects\\Suleimanov\\Servlet_CRUD\\src\\main\\resources\\store\\" + file.getName();
-        file.setFilePath(path);
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(path))) {
-            outputStream.writeObject(file.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+    public File save(File file, Integer userId) {
+        writeFile(file);
+        File savedFile = fileRepository.save(file);
+
+        if (userId != null) {
+            User user = userService.findById(userId);
+
+            Event event = new Event();
+            event.setUser(user);
+            event.setFile(file);
+            eventService.save(event);
         }
-        return fileRepository.save(file);
+
+        return savedFile;
     }
 
     public File update(File file, Integer id) {
+        File fileFromBd = findById(id);
+        writeFile(file);
+        deleteFile(fileFromBd);
         return fileRepository.update(id, file);
     }
 
@@ -41,6 +55,23 @@ public class FileService {
     }
 
     public void delete(Integer id) {
+        File fileFromBd = findById(id);
+        deleteFile(fileFromBd);
         fileRepository.delete(File.class, id);
+    }
+
+    private void writeFile(File file) {
+        try {
+            java.io.File fileToSave = new java.io.File(filePath + file.getName());
+            file.setFilePath(filePath + file.getName());
+            fileToSave.createNewFile();
+        } catch (IOException e) {
+            throw new  MyHibernateException("An error occurred while writing to the file: " + e.getMessage());
+        }
+    }
+
+    private void deleteFile(File file) {
+        java.io.File fileToDelete = new java.io.File(filePath + file.getName());
+        fileToDelete.delete();
     }
 }

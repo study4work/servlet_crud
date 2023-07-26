@@ -2,6 +2,7 @@ package com.lysenko.repository.hibernateImpl;
 
 import com.lysenko.config.HibernateConfig;
 import com.lysenko.entity.Event;
+import com.lysenko.entity.File;
 import com.lysenko.exception.MyHibernateException;
 import com.lysenko.repository.EventRepository;
 import org.hibernate.Session;
@@ -28,6 +29,6 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Override
     public List<Event> findAll() {
-        return HibernateConfig.getSession().createQuery("select e from Event e", Event.class).list();
+        return HibernateConfig.getSession().createQuery("From Event e left join fetch e.user left join fetch e.file", Event.class).list();
     }
 }

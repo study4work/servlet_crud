@@ -19,9 +19,10 @@ public class HibernateConfig {
 
                 // Указание настроек подключения к базе данных
                 configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-                configuration.setProperty("hibernate.connection.url", "jdbc:mysql://127.0.01:3306/crud");
-                configuration.setProperty("hibernate.connection.username", "postgres");
-                configuration.setProperty("hibernate.connection.password", "Qq111111");
+                configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/servlet_crud");
+                configuration.setProperty("hibernate.connection.username", "root");
+                configuration.setProperty("hibernate.connection.password", "secret");
+                configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 
                 // Добавление классов, которые будут сопоставлены с таблицами
                 configuration.addAnnotatedClass(Event.class);

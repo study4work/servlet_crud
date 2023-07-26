@@ -16,7 +16,6 @@ public class FileRepositoryImpl implements FileRepository {
         try (Session session = HibernateConfig.getSession()) {
             Transaction transaction = session.beginTransaction();
             File fileFromDb = session.get(File.class, integer);
-            fileFromDb.setFilePath(file.getFilePath());
             fileFromDb.setName(file.getName());
             session.update(fileFromDb);
             transaction.commit();

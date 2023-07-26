@@ -1,7 +1,6 @@
 package com.lysenko.repository.hibernateImpl;
 
 import com.lysenko.config.HibernateConfig;
-import com.lysenko.entity.File;
 import com.lysenko.entity.User;
 import com.lysenko.exception.MyHibernateException;
 import com.lysenko.repository.UserRepository;
@@ -23,11 +22,11 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (Exception e) {
             throw new MyHibernateException(String.format("Something goes wrong during update %s: %s", user, e));
         }
-        return null;
+        return user;
     }
 
     @Override
     public List<User> findAll() {
-        return HibernateConfig.getSession().createQuery("select u from User u", User.class).list();
+        return HibernateConfig.getSession().createQuery("select u from User u left join fetch u.events", User.class).list();
     }
 }

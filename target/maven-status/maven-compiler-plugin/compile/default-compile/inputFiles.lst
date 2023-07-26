@@ -5,6 +5,7 @@ C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\entity\User.java
 C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\repository\UserRepository.java
 C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\exception\MyHibernateException.java
 C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\repository\hibernateImpl\FileRepositoryImpl.java
+C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\config\GsonConfig.java
 C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\config\HibernateConfig.java
 C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\service\FileService.java
 C:\projects\Suleimanov\Servlet_CRUD\src\main\java\com\lysenko\controller\FileController.java
