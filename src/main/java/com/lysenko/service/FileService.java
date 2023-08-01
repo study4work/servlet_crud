@@ -3,11 +3,14 @@ package com.lysenko.service;
 import com.lysenko.entity.Event;
 import com.lysenko.entity.File;
 import com.lysenko.entity.User;
-import com.lysenko.exception.MyHibernateException;
 import com.lysenko.repository.FileRepository;
 import com.lysenko.repository.hibernateImpl.FileRepositoryImpl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class FileService {
@@ -23,8 +26,11 @@ public class FileService {
         this.fileRepository = new FileRepositoryImpl();
     }
 
-    public File save(File file, Integer userId) {
-        writeFile(file);
+    public File save(InputStream fileInputStream, String fileName, Integer userId) {
+        File file = new File();
+        file.setName(fileName);
+        file.setFilePath(filePath + fileName);
+        writeFile(fileInputStream, fileName);
         File savedFile = fileRepository.save(file);
 
         if (userId != null) {
@@ -39,11 +45,12 @@ public class FileService {
         return savedFile;
     }
 
-    public File update(File file, Integer id) {
-        File fileFromBd = findById(id);
-        writeFile(file);
-        deleteFile(fileFromBd);
-        return fileRepository.update(id, file);
+    public File update(InputStream newFileInputStream, Integer id, String fileName, String oldFileName) {
+        File fileToUpdate = new File();
+        fileToUpdate.setName(fileName);
+        writeFile(newFileInputStream, fileName);
+        deleteFile(oldFileName);
+        return fileRepository.update(id, fileToUpdate);
     }
 
     public File findById(Integer id) {
@@ -55,23 +62,21 @@ public class FileService {
     }
 
     public void delete(Integer id) {
-        File fileFromBd = findById(id);
-        deleteFile(fileFromBd);
-        fileRepository.delete(File.class, id);
+        File file = fileRepository.delete(File.class, id);
+        deleteFile(file.getName());
     }
 
-    private void writeFile(File file) {
-        try {
-            java.io.File fileToSave = new java.io.File(filePath + file.getName());
-            file.setFilePath(filePath + file.getName());
-            fileToSave.createNewFile();
+    private void writeFile(InputStream inputStream, String fileName) {
+        try (inputStream) {
+            Path path = Paths.get(filePath + fileName);
+            Files.copy(inputStream, path);
         } catch (IOException e) {
-            throw new  MyHibernateException("An error occurred while writing to the file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void deleteFile(File file) {
-        java.io.File fileToDelete = new java.io.File(filePath + file.getName());
+    private void deleteFile(String fileName) {
+        java.io.File fileToDelete = new java.io.File(filePath + fileName);
         fileToDelete.delete();
     }
 }

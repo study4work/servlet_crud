@@ -1,7 +1,6 @@
 package com.lysenko;
 
-import com.lysenko.controller.FileController;
-import com.lysenko.entity.File;
+import com.lysenko.rest.FileRestControllerV1;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -15,7 +14,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class FileTest {
 
-    FileController fileController = mock(FileController.class);
+    FileRestControllerV1 fileRestControllerV1 = mock(FileRestControllerV1.class);
 
     @Test
     public void saveFile() throws ServletException, IOException {

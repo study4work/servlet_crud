@@ -1,4 +1,4 @@
-package com.lysenko.controller;
+package com.lysenko.rest;
 
 import com.google.gson.Gson;
 import com.lysenko.config.GsonConfig;
@@ -14,23 +14,32 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/api/v1/users")
-public class UserController extends HttpServlet {
+@WebServlet("/api/v1/users/*")
+public class UserRestControllerV1 extends HttpServlet {
 
     private final Gson gson = GsonConfig.getGson();
-    private final UserService userService = new UserService();
+    private final UserService userService;
+
+    public UserRestControllerV1() {
+        userService = new UserService();
+    }
+
+    public UserRestControllerV1(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        String headerValue = request.getHeader("id");
+        String path = request.getPathInfo();
 
-        if (headerValue == null) {
+        if (path == null || path.equals("/")) {
             List<User> users = userService.findAll();
             String answer = gson.toJson(users);
             response.getWriter().write(answer);
         } else {
-            Integer id = Integer.valueOf(headerValue);
+            String[] idFromPath = path.split("/");
+            Integer id = Integer.valueOf(idFromPath[1]);
             User user = userService.findById(id);
             if (user != null) {
                 String answer = gson.toJson(user);
@@ -55,29 +64,33 @@ public class UserController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String headerValue = request.getHeader("id");
+    public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
         response.setContentType("application/json");
 
         String jsonData = readLineFromRequest(request);
 
-        if (headerValue != null) {
+        if (path != null && !path.equals("/")) {
            User user = gson.fromJson(jsonData, User.class);
+            String[] idFromPath = path.split("/");
+            Integer id = Integer.valueOf(idFromPath[1]);
            if (user != null) {
-               userService.update(user, Integer.valueOf(headerValue));
+               userService.update(user, id);
                response.sendError(HttpServletResponse.SC_OK, "Successful save user" + user);
            } else
-               throw new MyHibernateException("Something was wrong with user parsing");
+               throw new MyHibernateException("Something was wrong with user saving");
         }
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String headerValue = request.getHeader("id");
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
         response.setContentType("application/json");
 
-        if (!headerValue.isEmpty()) {
-            userService.delete(Integer.valueOf(headerValue));
+        if (path != null && !path.equals("/")) {
+            String[] idFromPath = path.split("/");
+            Integer id = Integer.valueOf(idFromPath[1]);
+            userService.delete(id);
             response.sendError(HttpServletResponse.SC_OK);
         } else
             throw new MyHibernateException("Value of user id is empty");

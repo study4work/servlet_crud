@@ -30,7 +30,6 @@ public class User {
     @Expose
     private String name;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @Expose
     private List<Event> events = new ArrayList<>();
 
     public Integer getId() {

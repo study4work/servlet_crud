@@ -18,7 +18,7 @@
         <mysql>8.0.30</mysql>
         <mockito>1.10.19</mockito>
         <juint>4.13.2</juint>
-        <sevlet>3.0.1</sevlet>
+        <sevlet>3.1.0</sevlet>
     </properties>
 
     <dependencies>

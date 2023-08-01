@@ -37,14 +37,16 @@ public interface GenericRepository<T, ID> {
 
     List<T> findAll();
 
-    default void delete(Class<T> entityClass, ID id) {
+    default T delete(Class<T> entityClass, ID id) {
+        T fileFromDb;
         try (Session session = HibernateConfig.getSession()) {
             Transaction transaction = session.beginTransaction();
-            T fileFromDb = session.get(entityClass, (Serializable) id);
+            fileFromDb = session.get(entityClass, (Serializable) id);
             session.delete(fileFromDb);
             transaction.commit();
         } catch (Exception e) {
             throw new MyHibernateException(String.format("Something goes wrong during delete file with id: %d: %s", id, e));
         }
+        return fileFromDb;
     }
 }
